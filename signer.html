@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>Aurora Signer</title>
+        <link rel="stylesheet" href="signer.css?v=<?php echo time(); ?>">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+    </head>
+    <body class="normal-mode">
+        <canvas id="starfield"></canvas>
+        <nav>
+            <div class="nav-container">
+                <button id="hamburgerMenu" class="hamburger-menu" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <a href="index.html">Home</a>
+                    <a href="installs.html">Install</a>
+                    <a href="signer.html">Signer</a>
+                    <a href="documentation.html">Documentation</a>
+                </div>
+                <a href="#" class="nav-icon" id="signInButton"
+                    ><i class="fas fa-sign-in-alt"></i
+                ></a>
+                <span id="userInfo" class="user-info hidden">
+                    <i class="fas fa-user"></i>
+                    <span id="username-display"></span>
+                    <button id="devButton" class="dev-button hidden">Admin Panel</button>
+                </span>
+                <a href="#" class="nav-icon hidden" id="devPanelButton"><i class="fas fa-cogs"></i></a>   
+            </div>
+        </nav>
+        <div class="container">
+            <h1>Aurora Signer</h1>
+            <form id="ASrequest" enctype="multipart/form-data">
+                <input type="text" name="username" autocomplete="username" style="display:none;">
+                <div class="file-input">
+                    <label for="p12"
+                        ><i class="fas fa-file-archive"></i> P12 File:</label
+                    >
+                    <input
+                        type="file"
+                        id="p12"
+                        name="p12"
+                        accept=".p12"
+                        required
+                    />
+                    <button type="button" class="file-button">
+                        Choose File
+                    </button>
+                </div>
+                <div class="file-input">
+                    <label for="mobileprovision"
+                        ><i class="fas fa-mobile-alt"></i> Mobile Provision
+                        File:</label
+                    >
+                    <input
+                        type="file"
+                        id="mobileprovision"
+                        name="mp"
+                        accept=".mobileprovision"
+                        required
+                    />
+                    <button type="button" class="file-button">
+                        Choose File
+                    </button>
+                </div>
+                <div class="file-input">
+                    <label for="ipa">
+                        <i class="fas fa-file-archive"></i> IPA File:
+                        <span class="file-size-limit" title="Maximum file size limit">
+                            (Max: <span id="maxFileSize">1 GB</span>)
+                        </span>
+                    </label>
+                    <input
+                        type="file"
+                        id="ipa"
+                        name="ipa"
+                        accept=".ipa"
+                        required
+                    />
+                    <button type="button" class="file-button">
+                        Choose File
+                    </button>
+                </div>
+                <div class="password-input">
+                    <label for="password"
+                        ><i class="fas fa-lock"></i> P12 Password:</label
+                    >
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <i class="fas fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 50px;"></i>
+                </div>
+                <button type="submit (alpha)">
+                    <i class="fas fa-sign-in-alt"></i> Sign IPA
+                </button>
+                <p id="linkDuration" class="link-duration-info"></p>
+                <div id="progressBarContainer" class="hidden">
+                    <div id="progressBar"></div>
+                    <div id="progressText">0%</div>
+                </div>
+            </form>
+            <div class="hero-text">
+                <h2>Aurora Signer</h2>
+                <p>We are quite simply one of the most consistent and fastest signing service available to date. <strong>Need we say more?</strong></p>
+                <p class="hero-subtext">Need help or want to join the community? <a href="https://discord.gg/MneB2xjtGu" target="_blank" rel="noopener noreferrer">Join our Discord</a></p>
+                <div id="result"></div>
+            </div>
+            <div id="loader" class="loader hidden"></div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Aurora Signer. All rights reserved.</p>
+        </footer>
+
+        <div id="authPopup" class="popup">
+            <div class="popup-content">
+                <span class="close">&times;</span>
+                <h2 id="authTitle">Sign Up</h2>
+                <form id="authForm">
+                    <input type="text" id="auth-username" placeholder="Enter your username" required autocomplete="username">
+                    <input type="password" id="auth-password" placeholder="Enter your password" required autocomplete="current-password">
+                    <div id="privacyPolicyAgreement">
+                        <input type="checkbox" id="agreePrivacyPolicy" required>
+                        <label for="agreePrivacyPolicy">I have read and understood the <a href="/documentation.html">signers capabilities</a></label>
+                    </div>
+                    <button type="submit" id="authSubmit">Sign Up</button>
+                </form>
+                <p id="authToggle">Already have an account? <a href="#">Login</a></p>
+            </div>
+        </div>
+
+        <div id="adminPanel" class="admin-panel hidden">
+            <h2>Admin Panel</h2>
+            <form id="adminSearchForm">
+                <input type="text" id="adminUserSearch" placeholder="Search users...">
+            </form>
+            <div id="adminUserList"></div>
+        </div>
+
+        <script src="database.js?v=<?php echo time(); ?>"></script>
+        <script src="signer.js"></script>
+        <script src="admin.js"></script>
+        <script>
+        document.addEventListener("DOMNodeInserted", function(e) {
+          if (e.target.classList && e.target.classList.contains("install-link")) {
+            // Prevent duplicate buttons
+            if (document.querySelector(".copy-link-btn")) return;
+
+            const installLink = e.target;
+            const copyBtn = document.createElement("button");
+            copyBtn.className = "copy-link-btn";
+            copyBtn.innerHTML = '<i class="fas fa-clipboard"></i> Copy Link';
+            copyBtn.style.marginLeft = "0.5em";
+            copyBtn.style.background = "#000";
+            copyBtn.style.color = "#f2f2f2";
+            copyBtn.style.border = "none";
+            copyBtn.style.borderRadius = "10px";
+            copyBtn.style.padding = "0.7em 1.3em";
+            copyBtn.style.fontSize = "1.08rem";
+            copyBtn.style.fontWeight = "600";
+            copyBtn.style.boxShadow = "0 2px 8px 0 #0008";
+            copyBtn.style.cursor = "pointer";
+            copyBtn.onclick = function() {
+              navigator.clipboard.writeText(installLink.href).then(() => {
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                  copyBtn.innerHTML = '<i class="fas fa-clipboard"></i> Copy Link';
+                }, 1500);
+              });
+            };
+            installLink.parentNode.insertBefore(copyBtn, installLink.nextSibling);
+          }
+        });
+        </script>
+    </body>
+</html>
